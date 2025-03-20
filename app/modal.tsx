@@ -1,35 +1,106 @@
-import { StatusBar } from 'expo-status-bar';
-import { Platform, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import { Text, TouchableOpacity, View, ScrollView, ActivityIndicator } from 'react-native';
+import { useLocalSearchParams } from 'expo-router';
+import { GoBackHeader } from '@/components/GoBackHeader';
+import { Container } from '@/components/Themed';
+import { WordData } from '@/types/types';
+import Icon from "@expo/vector-icons/FontAwesome"
+import { api } from '@/services/api';
 
-import EditScreenInfo from '@/components/EditScreenInfo';
-import { Text, View } from '@/components/Themed';
+type Sections = 'noun' | 'verb' | 'interjection'
 
 export default function ModalScreen() {
-  return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Modal</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <EditScreenInfo path="app/modal.tsx" />
+    const { data, word } = useLocalSearchParams();
 
-      {/* Use a light status bar on iOS to account for the black space above the modal */}
-      <StatusBar style={Platform.OS === 'ios' ? 'light' : 'auto'} />
-    </View>
-  );
+    const buttonSections: Sections[] = ['noun', 'verb', 'interjection']
+    const [sectionSelected, setSectionSelected] = useState<Sections>('noun');
+    const [loading, setLoading] = React.useState<boolean>(false);
+    const [wordData, setData] = React.useState<WordData | null>(data ? JSON.parse(data as string) : null);
+
+    const phoneticText = wordData?.phonetic ?? wordData?.phonetics?.find(({ text }) => !!text)?.text
+    const selectedDefinitions = 
+        wordData?.meanings?.find(({ partOfSpeech }) => partOfSpeech === sectionSelected)?.definitions ?? []
+
+    const fetchWord = async (word: string): Promise<void> => {
+        setLoading(true)
+
+        try {
+            const response = await api.get(`/${word}`)
+            setData(response.data[0])
+        } catch (err) {
+            console.error(err);
+        } finally {
+            setLoading(false)
+        }
+    }
+
+    React.useEffect(() => {
+        if (!data && word) {
+            fetchWord(String(word))
+        }
+    }, [data])
+
+    if (!wordData && !loading) return (
+        <Container>
+            <GoBackHeader label='Voltar' />
+            <Text>Detalhes da palavra não encontrado</Text>
+        </Container>
+    )
+
+    return (
+        <Container>
+            <GoBackHeader label='Voltar' />
+
+            {loading ?
+                <ActivityIndicator size={28} style={{ marginTop: 16 }}/>
+            :
+                <ScrollView showsVerticalScrollIndicator={false}>
+                    <Text className='mt-6 font-libre-baskerville-bold text-4xl mb-1'>{wordData?.word}</Text>
+                    <View className='flex-row items-center gap-3 mb-4'>
+                        <Text className='text-lg text-dark-primary'>{phoneticText}</Text>
+                        <TouchableOpacity>
+                            <Icon name="volume-up" size={20} color="#4A90E2" />
+                        </TouchableOpacity>   
+                    </View>
+
+                    <View className='flex-row items-center border border-dark-primary rounded-md self-start mt-2'>
+                        {buttonSections.map((text, index) =>
+                            <TouchableOpacity
+                                key={text}
+                                onPress={() => setSectionSelected(text)}
+                                className={`
+                                    py-2 px-3 ${index !== buttonSections.length - 1 && 'border-r border-dark-primary'}
+                                    ${sectionSelected === text && 'bg-light-primary '}
+                                `}
+                            >
+                                <Text className={`${sectionSelected === text ? 'text-white' : 'text-dark-primary'}`}>
+                                    {text}
+                                </Text>
+                            </TouchableOpacity>
+                        )}
+                    </View>
+
+                    <View className='mt-12'>
+                        <Text className='text-xl uppercase font-semibold mb-2'>Definições</Text>
+                        {selectedDefinitions.length ?
+                            selectedDefinitions.map((item, index) => 
+                                <View key={index.toString()} className='mb-1'>
+                                    <Text  className='text-base font-light'>
+                                        <Text className='text-xl font-semibold'>
+                                            {index + 1}{'. '}
+                                        </Text>
+                                        {item.definition}
+                                    </Text>
+                                </View>
+                            )
+                        :
+                            <Text  className='text-base font-light'>
+                                Sem definições.
+                            </Text>
+                        }
+                    </View>
+                </ScrollView>
+            }
+        </Container>
+    );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%',
-  },
-});

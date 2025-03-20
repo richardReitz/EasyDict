@@ -1,31 +1,75 @@
-import { StyleSheet } from 'react-native';
+import React, { useRef } from 'react';
+import { ActivityIndicator, FlatList, Text } from 'react-native';
+import { Container, Title } from '@/components/Themed';
+import { SearchInput } from '@/components/SearchInput';
+import { WordListItem } from '@/components/WordListItem';
+import { api } from '@/services/api';
+import { useAllWords } from '@/services/gettAllWords';
+import type { WordData } from "@/types/types";
 
-import EditScreenInfo from '@/components/EditScreenInfo';
-import { Text, View } from '@/components/Themed';
+export default function WordListScreen() {
+    const { allWords, loading: loadingAllWords } = useAllWords()
 
-export default function TabOneScreen() {
-  return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Tab One</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <EditScreenInfo path="app/(tabs)/index.tsx" />
-    </View>
-  );
+    const debounceRef = useRef<NodeJS.Timeout | null>(null);
+    
+    const [searchQuery, setSearchQuery] = React.useState('');
+    const [loading, setLoading] = React.useState<boolean>(false);
+    const [apiWords, setApiWords] = React.useState<WordData[]>([]);
+    const isApiData = !!apiWords.length
+
+    const fetchWord = async (word: string) => {
+        if (!word.trim()) return;
+        setLoading(true);
+        setApiWords([]);
+      
+        try {
+          const response = await api.get(`/${word}`);
+          setApiWords(response.data);
+        } catch (err) {
+            console.error(err);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleChange = (searchText: string) => {
+        setSearchQuery(searchText);
+    
+        if (debounceRef.current) {
+          clearTimeout(debounceRef.current);
+        }
+    
+        debounceRef.current = setTimeout(() => {
+          fetchWord(searchText);
+        }, 600); // 600ms
+    };
+
+    const ListEmptyComponent = (): JSX.Element => {
+        return(
+            <Text>Nenhum resultado encontrado</Text>
+        )
+    }
+
+    return (
+        <Container>
+            <Title>EasyDict</Title>
+
+            <SearchInput
+                value={searchQuery}
+                onChangeText={handleChange}
+                onClearIconPress={() => setApiWords([])}
+            />
+
+            {loading || loadingAllWords ? <ActivityIndicator size={24} style={{ marginTop: 16 }} /> :
+                <FlatList
+                    data={isApiData ? apiWords : allWords}
+                    showsVerticalScrollIndicator={false}
+                    ListEmptyComponent={ListEmptyComponent}
+                    keyExtractor={(key, index) => `${key.word}-${index}`}
+                    renderItem={({ item }) => <WordListItem data={item} fromApi={isApiData} />}
+                    className='mt-4'
+                />
+            }
+        </Container>
+    )
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%',
-  },
-});

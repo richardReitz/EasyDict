@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "541378797020",
+    "project_id": "easydictapp",
+    "storage_bucket": "easydictapp.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:541378797020:android:bdb322595da8e4cd954319",
+        "android_client_info": {
+          "package_name": "com.reitz.easydict"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC8OsocamSZJSlY1N4J9QhXaL4ZHKdOHUc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
