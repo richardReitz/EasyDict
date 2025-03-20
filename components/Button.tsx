@@ -7,7 +7,8 @@ export const Button: React.FC<Props> = ({ label, loading, ...rest }): JSX.Elemen
     return (
         <TouchableOpacity
             {...rest}
-            className="bg-dark-primary p-3 rounded-md w-full h-12"
+            disabled={loading}
+            className="bg-primary p-3 rounded-md w-full h-12 disabled:opacity-65"
         >
             {!!loading ?
                 <ActivityIndicator size={22} color="#fff" />

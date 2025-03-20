@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Text, TouchableOpacity, View, ScrollView, ActivityIndicator } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
-import { GoBackHeader } from '@/components/GoBackHeader';
+import { ModalHeader } from '@/components/ModalHeader';
 import { Container } from '@/components/Themed';
 import { WordData } from '@/types/types';
 import Icon from "@expo/vector-icons/FontAwesome"
@@ -42,38 +42,40 @@ export default function ModalScreen() {
 
     if (!wordData && !loading) return (
         <Container>
-            <GoBackHeader label='Voltar' />
+            <ModalHeader label='Voltar' />
             <Text>Detalhes da palavra não encontrado</Text>
         </Container>
     )
 
     return (
         <Container>
-            <GoBackHeader label='Voltar' />
+            <ModalHeader label='Voltar' word={wordData?.word} />
 
             {loading ?
                 <ActivityIndicator size={28} style={{ marginTop: 16 }}/>
             :
                 <ScrollView showsVerticalScrollIndicator={false}>
                     <Text className='mt-6 font-libre-baskerville-bold text-4xl mb-1'>{wordData?.word}</Text>
-                    <View className='flex-row items-center gap-3 mb-4'>
-                        <Text className='text-lg text-dark-primary'>{phoneticText}</Text>
-                        <TouchableOpacity>
-                            <Icon name="volume-up" size={20} color="#4A90E2" />
-                        </TouchableOpacity>   
-                    </View>
+                    {!!phoneticText &&
+                        <View className='flex-row items-center gap-3 mb-4'>
+                            <Text className='text-lg text-primary'>{phoneticText}</Text>
+                            <TouchableOpacity>
+                                <Icon name="volume-up" size={20} color="#4A90E2" />
+                            </TouchableOpacity>   
+                        </View>
+                    }
 
-                    <View className='flex-row items-center border border-dark-primary rounded-md self-start mt-2'>
+                    <View className='flex-row items-center border border-primary rounded-md self-start mt-2'>
                         {buttonSections.map((text, index) =>
                             <TouchableOpacity
                                 key={text}
                                 onPress={() => setSectionSelected(text)}
                                 className={`
-                                    py-2 px-3 ${index !== buttonSections.length - 1 && 'border-r border-dark-primary'}
-                                    ${sectionSelected === text && 'bg-light-primary '}
+                                    py-2 px-3 ${index !== buttonSections.length - 1 && 'border-r border-primary'}
+                                    ${sectionSelected === text && 'bg-primary '}
                                 `}
                             >
-                                <Text className={`${sectionSelected === text ? 'text-white' : 'text-dark-primary'}`}>
+                                <Text className={`${sectionSelected === text ? 'text-white' : 'text-primary'}`}>
                                     {text}
                                 </Text>
                             </TouchableOpacity>

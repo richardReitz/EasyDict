@@ -8,8 +8,8 @@ export const Input: React.FC<Props> = ({ ...rest }): JSX.Element => {
     return (
         <TextInput
             {...rest}
-            placeholderTextColor={Colors.light.textSecondary}
-            className="w-full p-3 text-light-text bg-[#E0E0E0] rounded mb-2 font-semibold"
+            placeholderTextColor={Colors.theme.textSecondary}
+            className="w-full p-3 text-text bg-[#E0E0E0] rounded mb-2 font-semibold"
         />
    );
 };

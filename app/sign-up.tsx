@@ -3,6 +3,7 @@ import { Button } from "@/components/Button";
 import { Input } from "@/components/Input";
 import { useState } from "react";
 import { router } from "expo-router";
+import { signUp } from "@/services/firebaseAuthService";
 
 export default function SignupScreen() {
     const [email, setEmail] = useState("");
@@ -32,6 +33,9 @@ export default function SignupScreen() {
             setLoading(true)
 
             try {
+                const user = await signUp(email, password)
+                console.log('user: ', user);
+                router.replace("/(tabs)")
             } catch (err) {
                 console.log('err: ', err);
             } finally {
@@ -68,7 +72,7 @@ export default function SignupScreen() {
                 <TouchableOpacity onPress={() => router.replace("/sign-in")}>
                     <Text>
                         Já possui uma conta?
-                        <Text className="font-semibold text-dark-primary"> Entrar</Text>
+                        <Text className="font-semibold text-primary"> Entrar</Text>
                     </Text>
                 </TouchableOpacity>
             </View>

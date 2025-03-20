@@ -15,6 +15,7 @@ export default function WordListScreen() {
     const [searchQuery, setSearchQuery] = React.useState('');
     const [loading, setLoading] = React.useState<boolean>(false);
     const [apiWords, setApiWords] = React.useState<WordData[]>([]);
+    const [searched, setSearched] = React.useState<boolean>(false);
     const isApiData = !!apiWords.length
 
     const fetchWord = async (word: string) => {
@@ -23,8 +24,8 @@ export default function WordListScreen() {
         setApiWords([]);
       
         try {
-          const response = await api.get(`/${word}`);
-          setApiWords(response.data);
+            const response = await api.get(`/${word}`);
+            setApiWords(response.data);
         } catch (err) {
             console.error(err);
         } finally {
@@ -32,15 +33,24 @@ export default function WordListScreen() {
         }
     };
 
-    const handleChange = (searchText: string) => {
+    const handleClearSearch = (): void => {
+        setApiWords([])
+        setSearchQuery('')
+        setSearched(false)
+    };
+
+    const handleFetchWord = (searchText: string) => {
         setSearchQuery(searchText);
     
         if (debounceRef.current) {
-          clearTimeout(debounceRef.current);
+            clearTimeout(debounceRef.current);
         }
     
         debounceRef.current = setTimeout(() => {
-          fetchWord(searchText);
+            if (!searchText) return handleClearSearch()
+
+            fetchWord(searchText);
+            setSearched(true)
         }, 600); // 600ms
     };
 
@@ -56,13 +66,13 @@ export default function WordListScreen() {
 
             <SearchInput
                 value={searchQuery}
-                onChangeText={handleChange}
-                onClearIconPress={() => setApiWords([])}
+                onChangeText={handleFetchWord}
+                onClearIconPress={handleClearSearch}
             />
 
             {loading || loadingAllWords ? <ActivityIndicator size={24} style={{ marginTop: 16 }} /> :
                 <FlatList
-                    data={isApiData ? apiWords : allWords}
+                    data={searched || isApiData ? apiWords : allWords}
                     showsVerticalScrollIndicator={false}
                     ListEmptyComponent={ListEmptyComponent}
                     keyExtractor={(key, index) => `${key.word}-${index}`}

@@ -1,37 +1,26 @@
 import { View, Text, Alert } from "react-native";
 import { Button } from "@/components/Button";
 import { Input } from "@/components/Input";
-import { Link } from "expo-router";
+import { Link, router } from "expo-router";
 import { useState } from "react";
+import { signIn } from "@/services/firebaseAuthService";
 
 export default function SigninScreen() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState<boolean>(false);
 
-    const validateForm = (): boolean => {
-        if (!email.includes("@")) {
-            Alert.alert("Email inválido");
-            return false;
-        }
-        if (password.length < 6) {
-            Alert.alert("Mínimo 6 caracteres");
-            return false;
-        }
-
-        return true
-    };
-
     const handleSignup = async (): Promise<void> => {
-        if (validateForm()) {
-            setLoading(true)
+        setLoading(true)
 
-            try {
-            } catch (err) {
-                console.log('err: ', err);
-            } finally {
-                setLoading(false)
-            }
+        try {
+            await signIn(email, password)
+            router.replace("/(tabs)")
+        } catch (err) {
+            Alert.alert("Oops", "Email ou senha incorreto.")
+            console.log('err: ', err);
+        } finally {
+            setLoading(false)
         }
     };
 
@@ -43,14 +32,14 @@ export default function SigninScreen() {
                 placeholder="Email"
                 value={email}
                 onChangeText={setEmail}
-                className="w-full p-3 border border-dark-background rounded mb-2"
+                className="w-full p-3 border border-bac rounded mb-2"
             />
             <Input
                 placeholder="Senha"
                 secureTextEntry
                 value={password}
                 onChangeText={setPassword}
-                className="w-full p-3 border border-dark-background rounded mb-2"
+                className="w-full p-3 border border-bac rounded mb-2"
             />
 
             <Button label="Entrar" loading={loading} onPress={handleSignup} />
@@ -59,7 +48,7 @@ export default function SigninScreen() {
                 <Link href="/sign-up">
                     <Text>
                         Não possui uma conta? 
-                        <Text className="font-semibold text-dark-primary">
+                        <Text className="font-semibold text-primary">
                             {' '}Cadastre-se
                         </Text>
                     </Text>

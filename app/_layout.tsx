@@ -1,19 +1,14 @@
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
+import { DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import 'react-native-reanimated';
-
-import { useColorScheme } from '@/components/useColorScheme';
-import "../global.css"
-
+import auth from '@react-native-firebase/auth';
+import { getCurrentUser } from '@/services/firebaseAuthService';
 export { ErrorBoundary } from 'expo-router';
-
-// export const unstable_settings = {
-// 	initialRouteName: 'sign-up',
-// };
+import "../global.css"
 
 SplashScreen.preventAutoHideAsync();
 
@@ -25,13 +20,23 @@ export default function RootLayout() {
 		...FontAwesome.font
 	});
 
-	// Expo Router uses Error Boundaries to catch errors in the navigation tree.
+	const [initializing, setInitializing] = useState(true);
+  
+	function onAuthStateChanged() {
+		if (initializing) setInitializing(false);
+	}
+  
+	useEffect(() => {
+		const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+		return subscriber;
+	}, []);
+
 	useEffect(() => {
 		if (error) throw error;
 	}, [error]);
 
 	useEffect(() => {
-		if (loaded) {
+		if (loaded || initializing) {
 			SplashScreen.hideAsync();
 		}
 	}, [loaded]);
@@ -44,15 +49,14 @@ export default function RootLayout() {
 }
 
 function RootLayoutNav() {
-	const colorScheme = useColorScheme();
+	const user = getCurrentUser()
 
 	return (
-		<ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-			<Stack initialRouteName='sign-in'>
-			<Stack.Screen name="sign-up" options={{ headerShown: false }} />
-			<Stack.Screen name="sign-in" options={{ headerShown: false }} />
-			<Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-			<Stack.Screen name="modal" options={{ headerShown: false, presentation: 'modal' }} />
+		<ThemeProvider value={DefaultTheme}>
+			<Stack initialRouteName={!user ? 'sign-in' : '(tabs)'} screenOptions={{ headerShown: false }}>
+				<Stack.Screen name="sign-up" />
+				<Stack.Screen name="sign-in" />
+				<Stack.Screen name="modal" options={{ presentation: 'modal' }} />
 			</Stack>
 		</ThemeProvider>
 	);

@@ -1,14 +1,18 @@
 import { Text, TouchableOpacity, TouchableOpacityProps, View } from "react-native"
 import { useRouter } from 'expo-router';
 import Icon from "@expo/vector-icons/MaterialIcons"
+import { useHistoryWord } from "@/hooks/useHistoryWord";
 import type { WordData } from "@/types/types";
 
-type Props = { data: Partial<WordData>; fromApi: boolean } & TouchableOpacityProps
+type Props = { data: Partial<WordData>; fromApi?: boolean } & TouchableOpacityProps
 
-export const WordListItem: React.FC<Props> = ({ data, fromApi }) => {
+export const WordListItem: React.FC<Props> = ({ data, fromApi = false}) => {
     const router = useRouter();
+    const { addWord } = useHistoryWord()
 
-    const onPress = () =>  router.push({
+    const onPress = () =>  {
+        if (data?.word) addWord(data.word)
+        router.push({
             pathname: "/modal",
             params: {
                 ...fromApi && {
@@ -19,16 +23,17 @@ export const WordListItem: React.FC<Props> = ({ data, fromApi }) => {
                 }
             }
         });
+    }
     const phoneticText = data?.phonetic ?? data?.phonetics?.find(({ text }) => !!text)?.text
 
     return (
             <TouchableOpacity
                 activeOpacity={0.6}
                 onPress={onPress}
-                className="flex-row items-center justify-between border-[0.5px] border-dark-background dark:border-light-background rounded-md mt-2 p-4"
+                className="flex-row items-center justify-between border-[0.5px] border-text rounded-md mt-2 p-4"
             >
                 <View className="">
-                    <Text className="text-light-text dark:border-dark-text text-2xl font-libre-baskerville-bold">
+                    <Text className="text-text text-2xl font-libre-baskerville-bold">
                         {data.word}
                     </Text>
                     {!!phoneticText &&

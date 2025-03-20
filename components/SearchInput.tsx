@@ -1,20 +1,26 @@
 import Colors from "@/constants/Colors";
-import { useColorScheme } from "react-native"
-import { Searchbar, type SearchbarProps } from "react-native-paper"
+import { TextInput, TextInputProps, TouchableOpacity, View } from "react-native"
+import Icon from "@expo/vector-icons/Feather"
 
-export function SearchInput({ ...props }: SearchbarProps) {
-    const theme = useColorScheme();
-    const colors = theme === "dark" ? Colors.dark : Colors.light;
+type Props = { onClearIconPress: VoidFunction } & TextInputProps
 
+export function SearchInput({ onClearIconPress, ...props }: Props) {
     return (
-        <Searchbar
-            {...props}
-            placeholder="Pesquise aqui"
-            placeholderTextColor={colors.textSecondary}
-            style={{
-                borderRadius: 8,
-                backgroundColor: colors.textLight,
-            }}
-        />
+        <View className="flex-row items-center bg-text-light rounded-md gap-3 px-4">
+            <Icon name="search" size={18} />
+            <TextInput
+                {...props}
+                placeholder="Pesquise aqui"
+                className="font-semibold py-4"
+                placeholderTextColor={Colors.theme.textSecondary}
+            />
+            <TouchableOpacity
+                onPress={onClearIconPress}
+                hitSlop={{ top: 8, left: 8, bottom: 8, right: 8 }}
+                className="absolute right-4"
+            >
+                <Icon name="x" size={18} />
+            </TouchableOpacity>
+        </View>
     )
 }
