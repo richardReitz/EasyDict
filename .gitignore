@@ -79,3 +79,7 @@ yarn-error.*
 *.tsbuildinfo
 
 # @end expo-cli
+
+# firebase files
+google-services.json
+GoogleService-Info.plist

@@ -10,7 +10,7 @@ import { EmptyList } from '@/components/EmptyList';
 import type { WordData } from "@/types/types";
 
 export default function WordListScreen() {
-    const { allWords, loading: loadingAllWords } = useGetAllWords()
+    const { visibleWords: allWords, loading: loadingAllWords, loadMore } = useGetAllWords()
 
     const debounceRef = useRef<NodeJS.Timeout | null>(null);
     
@@ -76,6 +76,9 @@ export default function WordListScreen() {
                     ListEmptyComponent={emptyComponent}
                     keyExtractor={(key, index) => `${key.word}-${index}`}
                     renderItem={({ item }) => <WordListItem data={item} fromApi={isApiData} />}
+                    onEndReachedThreshold={0.4}
+                    onEndReached={loadMore}
+                    ListFooterComponent={loadingAllWords ? <Loading /> : null}
                     className='mt-4'
                 />
             }
