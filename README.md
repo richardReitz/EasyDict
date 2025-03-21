@@ -14,6 +14,7 @@ Além disso o app conta com criação e gerenciamento de conta, afim de resguard
   - NativeWindCSS
   - Firebase Auth (autenticação)
   - Firebase Firestore (banco de dados)
+  - Axios Cache Interceptor (cache HTTP) 
 
 ## Instalação e Uso
 
