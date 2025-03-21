@@ -6,6 +6,7 @@ import { ScreenView } from '@/components';
 import Icon from "@expo/vector-icons/FontAwesome"
 import { dictionaryApi } from '@/services/dictionaryApi';
 import { Loading } from '@/components/Loading';
+import { Audio } from 'expo-av';
 import type { WordData } from '@/types/types';
 
 type Sections = 'noun' | 'verb' | 'interjection'
@@ -16,18 +17,29 @@ export default function ModalScreen() {
     const buttonSections: Sections[] = ['noun', 'verb', 'interjection']
     const [sectionSelected, setSectionSelected] = useState<Sections>('noun');
     const [loading, setLoading] = React.useState<boolean>(false);
-    const [wordData, setData] = React.useState<WordData | null>(data ? JSON.parse(data as string) : null);
+    const [wordData, setWordData] = React.useState<WordData | null>(data ? JSON.parse(data as string) : null);
 
     const phoneticText = wordData?.phonetic ?? wordData?.phonetics?.find(({ text }) => !!text)?.text
     const selectedDefinitions = 
         wordData?.meanings?.find(({ partOfSpeech }) => partOfSpeech === sectionSelected)?.definitions ?? []
+
+    const playSound = async (): Promise<void> => {
+        if (!wordData?.phonetics[0].audio) return;
+
+        try {
+            const { sound } = await Audio.Sound.createAsync({ uri: wordData?.phonetics[0].audio });
+            await sound.playAsync();
+        } catch (error) {
+            console.error('Erro ao carregar o áudio', error);
+        }
+    };
 
     const fetchWord = async (word: string): Promise<void> => {
         setLoading(true)
 
         try {
             const response = await dictionaryApi.get(`/${word}`)
-            setData(response.data[0])
+            setWordData(response.data[0])
         } catch (err) {
             console.error(err);
         } finally {
@@ -60,9 +72,12 @@ export default function ModalScreen() {
                     {!!phoneticText &&
                         <View className='flex-row items-center gap-3 mb-4'>
                             <Text className='text-lg text-primary'>{phoneticText}</Text>
-                            <TouchableOpacity>
-                                <Icon name="volume-up" size={20} color="#4A90E2" />
-                            </TouchableOpacity>   
+
+                            {!!wordData?.phonetics[0]?.audio &&
+                                <TouchableOpacity onPress={playSound} >
+                                    <Icon name="volume-up" size={20} color="#4A90E2" />
+                                </TouchableOpacity>   
+                            }
                         </View>
                     }
 
