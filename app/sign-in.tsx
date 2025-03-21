@@ -3,7 +3,7 @@ import { Button } from "@/components/Button";
 import { Input } from "@/components/Input";
 import { Link, router } from "expo-router";
 import { useState } from "react";
-import { signIn } from "@/services/firebaseAuthService";
+import { userSignIn } from "@/services/firebaseAuthService";
 
 export default function SigninScreen() {
     const [email, setEmail] = useState("");
@@ -14,7 +14,7 @@ export default function SigninScreen() {
         setLoading(true)
 
         try {
-            await signIn(email, password)
+            await userSignIn(email, password)
             router.replace("/(tabs)")
         } catch (err) {
             Alert.alert("Oops", "Email ou senha incorreto.")

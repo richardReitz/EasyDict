@@ -6,13 +6,17 @@ import * as SplashScreen from 'expo-splash-screen';
 import { useEffect, useState } from 'react';
 import 'react-native-reanimated';
 import auth from '@react-native-firebase/auth';
-import { getCurrentUser } from '@/services/firebaseAuthService';
 export { ErrorBoundary } from 'expo-router';
+import { type User, useUserStore } from '@/store/useUserStore';
+
 import "../global.css"
 
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
+	const { setUser } = useUserStore((state) => state)
+
+	const [initializing, setInitializing] = useState(true);
 	const [loaded, error] = useFonts({
 		SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
 		'LibreBaskerville-Regular': require('../assets/fonts/LibreBaskerville-Regular.ttf'),
@@ -20,16 +24,16 @@ export default function RootLayout() {
 		...FontAwesome.font
 	});
 
-	const [initializing, setInitializing] = useState(true);
-  
-	function onAuthStateChanged() {
-		if (initializing) setInitializing(false);
-	}
-  
 	useEffect(() => {
-		const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
-		return subscriber;
-	}, []);
+		setInitializing(true);
+	
+		const subscriber = auth().onAuthStateChanged((user: User) => {
+			setUser(user);
+			setInitializing(false);
+		});
+	
+		return () => subscriber();
+	  }, [setUser, setInitializing]);
 
 	useEffect(() => {
 		if (error) throw error;
@@ -49,7 +53,7 @@ export default function RootLayout() {
 }
 
 function RootLayoutNav() {
-	const user = getCurrentUser()
+	const { user } = useUserStore((state) => state);
 
 	return (
 		<ThemeProvider value={DefaultTheme}>

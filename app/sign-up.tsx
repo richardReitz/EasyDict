@@ -3,7 +3,7 @@ import { Button } from "@/components/Button";
 import { Input } from "@/components/Input";
 import { useState } from "react";
 import { router } from "expo-router";
-import { signUp } from "@/services/firebaseAuthService";
+import { userSignUp } from "@/services/firebaseAuthService";
 
 export default function SignupScreen() {
     const [email, setEmail] = useState("");
@@ -13,15 +13,15 @@ export default function SignupScreen() {
 
     const validateForm = (): boolean => {
         if (!email.includes("@")) {
-            Alert.alert("Email inválido");
+            Alert.alert("Erro", "Email inválido");
             return false;
         }
         if (password.length < 6) {
-            Alert.alert("Mínimo 6 caracteres");
+            Alert.alert("Erro", "Mínimo 6 caracteres");
             return false;
         }
         if (password !== confirmPassword) {
-            Alert.alert("As senhas não coincidem");
+            Alert.alert("Erro", "As senhas não coincidem");
             return false;
         } 
 
@@ -33,7 +33,7 @@ export default function SignupScreen() {
             setLoading(true)
 
             try {
-                const user = await signUp(email, password)
+                const user = await userSignUp(email, password)
                 console.log('user: ', user);
                 router.replace("/(tabs)")
             } catch (err) {

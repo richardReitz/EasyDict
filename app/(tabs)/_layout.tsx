@@ -1,7 +1,8 @@
 import React from 'react';
 import MaterialIcons from "@expo/vector-icons/MaterialIcons"
-import { Tabs } from 'expo-router';
+import { Redirect, Tabs } from 'expo-router';
 import Colors from '@/constants/Colors';
+import { useUserStore } from '@/store/useUserStore';
 
 function TabBarIcon(props: {
     name: React.ComponentProps<typeof MaterialIcons>['name'];
@@ -11,12 +12,17 @@ function TabBarIcon(props: {
 }
 
 export default function TabLayout() {
+    const { user } = useUserStore((state) => state);
+
+    if (!user) return <Redirect href="/sign-in" />;
+
     return (
         <Tabs
             screenOptions={{
-            tabBarActiveTintColor: Colors.theme.tint,
-            headerShown: false,
-        }}>
+                tabBarActiveTintColor: Colors.theme.tint,
+                headerShown: false,
+            }}
+        >
             <Tabs.Screen
                 name="index"
                 options={{

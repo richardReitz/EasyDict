@@ -11,7 +11,7 @@ export const WordListItem: React.FC<Props> = ({ data, fromApi = false}) => {
     const { addWord } = useHistoryWord()
 
     const onPress = () =>  {
-        if (data?.word) addWord(data.word)
+        if (data?.word && fromApi) addWord(data.word)
         router.push({
             pathname: "/modal",
             params: {

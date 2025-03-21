@@ -1,14 +1,16 @@
 import React, { useRef } from 'react';
-import { ActivityIndicator, FlatList, Text } from 'react-native';
+import { FlatList } from 'react-native';
 import { Container, Title } from '@/components/Themed';
 import { SearchInput } from '@/components/SearchInput';
 import { WordListItem } from '@/components/WordListItem';
 import { api } from '@/services/api';
-import { useAllWords } from '@/services/gettAllWords';
+import { useGetAllWords } from '@/hooks/useGetAllWords';
+import { Loading } from '@/components/Loading';
+import { EmptyList } from '@/components/EmptyList';
 import type { WordData } from "@/types/types";
 
 export default function WordListScreen() {
-    const { allWords, loading: loadingAllWords } = useAllWords()
+    const { allWords, loading: loadingAllWords } = useGetAllWords()
 
     const debounceRef = useRef<NodeJS.Timeout | null>(null);
     
@@ -54,11 +56,8 @@ export default function WordListScreen() {
         }, 600); // 600ms
     };
 
-    const ListEmptyComponent = (): JSX.Element => {
-        return(
-            <Text>Nenhum resultado encontrado</Text>
-        )
-    }
+    const emptyComponent = (): JSX.Element => 
+        <EmptyList label='Nenhum resultado encontrado.' />
 
     return (
         <Container>
@@ -70,11 +69,11 @@ export default function WordListScreen() {
                 onClearIconPress={handleClearSearch}
             />
 
-            {loading || loadingAllWords ? <ActivityIndicator size={24} style={{ marginTop: 16 }} /> :
+            {loading || loadingAllWords ? <Loading className='mt-4' /> :
                 <FlatList
                     data={searched || isApiData ? apiWords : allWords}
                     showsVerticalScrollIndicator={false}
-                    ListEmptyComponent={ListEmptyComponent}
+                    ListEmptyComponent={emptyComponent}
                     keyExtractor={(key, index) => `${key.word}-${index}`}
                     renderItem={({ item }) => <WordListItem data={item} fromApi={isApiData} />}
                     className='mt-4'

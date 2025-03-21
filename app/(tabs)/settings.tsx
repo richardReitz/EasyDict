@@ -1,15 +1,17 @@
 import { Container, Title } from "@/components/Themed";
 import { Text, TouchableOpacity, View } from "react-native";
 import Icon from "@expo/vector-icons/MaterialIcons"
-import { getCurrentUser, logout } from "@/services/firebaseAuthService";
+import { userLogout } from "@/services/firebaseAuthService";
 import { router } from "expo-router";
+import { useUserStore } from "@/store/useUserStore";
 
 export default function SettingsScreen() {
-    const user = getCurrentUser()
+    const { user, setUser } = useUserStore((state) => state);
     
     const handleLogout = async () => {
         try {
-            await logout()
+            await userLogout();
+            setUser(null);
             router.replace('/sign-in')
         } catch (err) {
             console.error(err);

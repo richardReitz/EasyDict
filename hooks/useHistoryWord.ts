@@ -1,7 +1,8 @@
 import React from "react";
 import * as SecureStore from 'expo-secure-store';
-import { WordData } from "@/types/types";
 import { useHistoryWordStore } from "@/store/useHistoryWordStore";
+import { useUserStore } from "@/store/useUserStore";
+import type { WordData } from "@/types/types";
 
 type Props = {
     addWord: (n: string) => Promise<void>;
@@ -12,20 +13,22 @@ type Props = {
 
 export const useHistoryWord = (): Props => {
     const { setWords, words } = useHistoryWordStore((state) => state)
+    const { user } = useUserStore((state) => state)
     
-    const STORAGE_KEY = 'easy-dict-history';
+    const STORAGE_KEY = `easy-dict-history-${user?.uid}`;
 
-    const addWord = async (newItem: string) => {
+    const addWord = async (newWord: string) => {
         try {
             let array: Partial<WordData>[] = [];
 
             const existingData = await getWordHistory();
+            const dataToUpdate = existingData.filter((i) => i.word !== newWord);
         
-            if (existingData) array = existingData;
-            array.push({ word: newItem });
+            if (dataToUpdate) array = dataToUpdate;
+            array.unshift({ word: newWord });
             await SecureStore.setItem(STORAGE_KEY, JSON.stringify(array));
+
             setWords(array);
-        
         } catch (error) {
             throw error;
         }

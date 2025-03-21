@@ -8,6 +8,7 @@ type Props = { label: string; word?: string }
 
 export function ModalHeader({ label, word }: Props) {
     const { favoriteWords, addWord, removeWord } = useFavoriteWords()
+    console.log('favoriteWords: ', favoriteWords);
 
     const [isFavorite, setIsFavorite] = React.useState<boolean>(false);
 

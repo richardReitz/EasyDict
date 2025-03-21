@@ -6,6 +6,7 @@ import { Container } from '@/components/Themed';
 import { WordData } from '@/types/types';
 import Icon from "@expo/vector-icons/FontAwesome"
 import { api } from '@/services/api';
+import { Loading } from '@/components/Loading';
 
 type Sections = 'noun' | 'verb' | 'interjection'
 
@@ -52,7 +53,7 @@ export default function ModalScreen() {
             <ModalHeader label='Voltar' word={wordData?.word} />
 
             {loading ?
-                <ActivityIndicator size={28} style={{ marginTop: 16 }}/>
+                <Loading className='mt-4' />
             :
                 <ScrollView showsVerticalScrollIndicator={false}>
                     <Text className='mt-6 font-libre-baskerville-bold text-4xl mb-1'>{wordData?.word}</Text>

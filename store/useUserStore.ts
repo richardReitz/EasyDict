@@ -1,11 +1,10 @@
+import { FirebaseAuthTypes } from '@react-native-firebase/auth';
 import { create } from 'zustand'
 
-type User = {
-    email: string;
-}
+export type User = FirebaseAuthTypes.User | null
 
 type Store = {
-    user: User | null;
+    user: User;
     setUser: (user: User) => void;
 }
 
