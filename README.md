@@ -14,7 +14,8 @@ Além disso o app conta com criação e gerenciamento de conta, afim de resguard
   - NativeWindCSS
   - Firebase Auth (autenticação)
   - Firebase Firestore (banco de dados)
-  - Axios Cache Interceptor (cache HTTP) 
+  - Axios Cache Interceptor (cache HTTP)
+  - Expo-av (reprodução de audio)
 
 ## Instalação e Uso
 
@@ -55,5 +56,12 @@ Além disso o app conta com criação e gerenciamento de conta, afim de resguard
    ```
 
 8. Escaneie o QR Code com o aplicativo Expo Go ou execute no emulador.
+   
+----
+
+## Demonstração do App
+
+https://github.com/user-attachments/assets/fc39d374-68d5-4742-add9-1557b3985320
+
 
 
