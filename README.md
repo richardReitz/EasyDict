@@ -1,8 +1,8 @@
 # EasyDict App
 
 ## Descrição
-Um aplicativo de dicionário de palavras em inglês, onde o usuário pode pesquisar palavras, visualizar detalhes, marcar como favorita, acessar o histórico de pesquisa.
-Além disso o app conta com criação e gerenciamento de conta, afim de resguardar os dados do usuário.
+EasyDict é um aplicativo de dicionário de palavras em inglês, onde o usuário pode pesquisar palavras, visualizar detalhes, marcar como favorita, acessar o histórico de pesquisa.
+Além disso o app conta com criação e gerenciamento de conta, afim de resguardar os dados e preferências do usuário.
 
 ## Tecnologias Utilizadas
 - **Linguagem:** TypeScript
@@ -31,7 +31,7 @@ Além disso o app conta com criação e gerenciamento de conta, afim de resguard
 
 3. Instale as dependências:
    ```sh
-     yarn
+   yarn
    ```
    
 5. Execute o prebuild para gerar os arquivos nativos:
