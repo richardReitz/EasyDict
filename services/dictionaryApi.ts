@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { setupCache } from 'axios-cache-interceptor';
 
-export const api = setupCache(
+export const dictionaryApi = setupCache(
     axios.create({
         baseURL: 'https://api.dictionaryapi.dev/api/v2/entries/en'
     }),

@@ -1,8 +1,8 @@
 import { FlatList, Text, View } from 'react-native';
-import { Container, Title } from '@/components/Themed';
 import { useHistoryWord } from '@/hooks/useHistoryWord';
 import { WordListItem } from '@/components/WordListItem';
 import { EmptyList } from '@/components/EmptyList';
+import { ScreenTitle, ScreenView } from '@/components';
 
 export default function HistoryScreen() {
     const { words: historyWords } = useHistoryWord()
@@ -11,8 +11,8 @@ export default function HistoryScreen() {
         <EmptyList label='Nenhuma pesquisa recente.' />
 
     return (
-        <Container>
-            <Title>Histórico</Title>
+        <ScreenView>
+            <ScreenTitle title='Histórico' />
             <Text className='text-lg'>Pesquisas recentes</Text>
             <FlatList
                 data={historyWords}
@@ -20,6 +20,6 @@ export default function HistoryScreen() {
                 renderItem={({ item }) => <WordListItem data={item} />}
                 ListEmptyComponent={emptyComponent}
             />
-        </Container>
+        </ScreenView>
     );
 }

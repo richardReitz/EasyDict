@@ -48,11 +48,11 @@ export default function TabLayout() {
                 }}
             />
             <Tabs.Screen
-                name="settings"
+                name="profile"
                 options={{
                     headerShown: false,
-                    title: 'Configurações',
-                    tabBarIcon: ({ color }) => <TabBarIcon name="tune" color={color} />,
+                    title: 'Conta',
+                    tabBarIcon: ({ color }) => <TabBarIcon name="person-outline" color={color} />,
                 }}
             />
         </Tabs>

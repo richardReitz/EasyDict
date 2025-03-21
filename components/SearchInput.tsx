@@ -4,7 +4,7 @@ import Icon from "@expo/vector-icons/Feather"
 
 type Props = { onClearIconPress: VoidFunction } & TextInputProps
 
-export function SearchInput({ onClearIconPress, ...props }: Props) {
+export const SearchInput: React.FC<Props> = ({ onClearIconPress, ...props }) => {
     return (
         <View className="flex-row items-center bg-text-light rounded-md gap-3 px-4">
             <Icon name="search" size={18} />

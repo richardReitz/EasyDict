@@ -1,6 +1,6 @@
 import React from 'react';
 import { FlatList, Text, View } from 'react-native';
-import { Container, Title } from '@/components/Themed';
+import { ScreenTitle, ScreenView } from '@/components';
 import { WordListItem } from '@/components/WordListItem';
 import { useFavoriteWords } from '@/hooks/useFavoriteWords';
 import { EmptyList } from '@/components/EmptyList';
@@ -12,8 +12,8 @@ export default function FavoritesScreen() {
         <EmptyList label='Nenhum item marcado como favorito.' />
 
     return (
-        <Container>
-            <Title>Favoritos</Title>
+         <ScreenView>
+            <ScreenTitle title='Favoritos' />
             <Text className='text-lg'>Marcadas como favorito</Text>
             <FlatList
                 data={favoriteWords}
@@ -21,6 +21,6 @@ export default function FavoritesScreen() {
                 renderItem={({ item }) => <WordListItem data={item} />}
                 ListEmptyComponent={emptyComponent}
             />
-        </Container>
+        </ScreenView>
     );
 }

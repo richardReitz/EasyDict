@@ -1,4 +1,4 @@
-import { Container, Title } from "@/components/Themed";
+import { ScreenTitle, ScreenView } from "@/components";
 import { Text, TouchableOpacity, View } from "react-native";
 import Icon from "@expo/vector-icons/MaterialIcons"
 import { userLogout } from "@/services/firebaseAuthService";
@@ -19,15 +19,15 @@ export default function SettingsScreen() {
     }
 
     return (
-        <Container>
-            <Title>Configurações</Title>
+        <ScreenView>
+            <ScreenTitle title='Conta' />
             <View className="flex-row items-center justify-between">
-                <Text className="text-base font-light">Usuário: {user?.email}</Text>
+                <Text className="text-base">Usuário: <Text className="font-light">{user?.email}</Text></Text>
                 <TouchableOpacity onPress={handleLogout} className="flex-row items-center gap-2">
-                    <Text className=" text-red-500">Sair</Text>
+                    <Text className="text-red-500">Sair</Text>
                     <Icon name="logout" color="red" />
                 </TouchableOpacity>
             </View>
-        </Container>
+        </ScreenView>
     );
 }

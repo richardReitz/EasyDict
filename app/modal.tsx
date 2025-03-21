@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { Text, TouchableOpacity, View, ScrollView, ActivityIndicator } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { ModalHeader } from '@/components/ModalHeader';
-import { Container } from '@/components/Themed';
-import { WordData } from '@/types/types';
+import { ScreenView } from '@/components';
 import Icon from "@expo/vector-icons/FontAwesome"
-import { api } from '@/services/api';
+import { dictionaryApi } from '@/services/dictionaryApi';
 import { Loading } from '@/components/Loading';
+import type { WordData } from '@/types/types';
 
 type Sections = 'noun' | 'verb' | 'interjection'
 
@@ -26,7 +26,7 @@ export default function ModalScreen() {
         setLoading(true)
 
         try {
-            const response = await api.get(`/${word}`)
+            const response = await dictionaryApi.get(`/${word}`)
             setData(response.data[0])
         } catch (err) {
             console.error(err);
@@ -42,15 +42,15 @@ export default function ModalScreen() {
     }, [data])
 
     if (!wordData && !loading) return (
-        <Container>
-            <ModalHeader label='Voltar' />
+        <ScreenView>
+            <ModalHeader />
             <Text>Detalhes da palavra não encontrado</Text>
-        </Container>
+        </ScreenView>
     )
 
     return (
-        <Container>
-            <ModalHeader label='Voltar' word={wordData?.word} />
+        <ScreenView>
+            <ModalHeader word={wordData?.word} />
 
             {loading ?
                 <Loading className='mt-4' />
@@ -104,6 +104,6 @@ export default function ModalScreen() {
                     </View>
                 </ScrollView>
             }
-        </Container>
+        </ScreenView>
     );
 }

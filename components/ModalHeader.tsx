@@ -4,11 +4,10 @@ import { router } from "expo-router"
 import Icon from "@expo/vector-icons/MaterialIcons"
 import { useFavoriteWords } from "@/hooks/useFavoriteWords";
 
-type Props = { label: string; word?: string }
+type Props = { word?: string }
 
-export function ModalHeader({ label, word }: Props) {
+export const ModalHeader: React.FC<Props> = ({ word }) => {
     const { favoriteWords, addWord, removeWord } = useFavoriteWords()
-    console.log('favoriteWords: ', favoriteWords);
 
     const [isFavorite, setIsFavorite] = React.useState<boolean>(false);
 
@@ -46,10 +45,10 @@ export function ModalHeader({ label, word }: Props) {
 
     return (
         <View className="flex-row items-center justify-between">
-            <TouchableOpacity onPress={router.back} className="flex-row items-center gap-1 mb-2">
-                <Icon name="chevron-left" size={24} />
+            <TouchableOpacity onPress={router.back} className="flex-row items-center gap-2 mb-2">
+                <Icon name="arrow-back" size={22} />
                 <Text className='text-xl'>
-                    {label}
+                    Voltar
                 </Text>
 
             </TouchableOpacity>

@@ -1,9 +1,9 @@
 import React, { useRef } from 'react';
 import { FlatList } from 'react-native';
-import { Container, Title } from '@/components/Themed';
+import { ScreenTitle, ScreenView } from '@/components';
 import { SearchInput } from '@/components/SearchInput';
 import { WordListItem } from '@/components/WordListItem';
-import { api } from '@/services/api';
+import { dictionaryApi } from '@/services/dictionaryApi';
 import { useGetAllWords } from '@/hooks/useGetAllWords';
 import { Loading } from '@/components/Loading';
 import { EmptyList } from '@/components/EmptyList';
@@ -26,7 +26,7 @@ export default function WordListScreen() {
         setApiWords([]);
       
         try {
-            const response = await api.get(`/${word}`);
+            const response = await dictionaryApi.get(`/${word}`);
             setApiWords(response.data);
         } catch (err) {
             console.error(err);
@@ -60,8 +60,8 @@ export default function WordListScreen() {
         <EmptyList label='Nenhum resultado encontrado.' />
 
     return (
-        <Container>
-            <Title>EasyDict</Title>
+        <ScreenView>
+            <ScreenTitle title='EasyDict' />
 
             <SearchInput
                 value={searchQuery}
@@ -79,6 +79,6 @@ export default function WordListScreen() {
                     className='mt-4'
                 />
             }
-        </Container>
+        </ScreenView>
     )
 }
